@@ -1,0 +1,22 @@
+# DRAFT FORMAT. See README.md in this directory.
+# Fictional broker for illustration. Nothing here describes a real site,
+# contact address or opt-out procedure.
+
+id: example-people-search
+name: Example People Search
+jurisdiction: US
+search_url: https://people.example.com/search?name={full_name}&region={region}
+channel: webform
+privacy_contact: privacy@example.com
+steps:
+  - open: https://people.example.com/opt-out
+  - fill:
+      selector: "#listing-url"
+      value: "{listing_url}"
+  - fill:
+      selector: "#email"
+      value: "{alias}"
+  - click: "#submit"
+  - wait_for: "#confirmation"
+recheck_days: 90
+last_verified: 2026-10-05

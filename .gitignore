@@ -1,0 +1,16 @@
+# Built binary. Anchored so it does not match cmd/scrub.
+/scrub
+
+# Local database
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+
+# Secrets: the identity profile and mail credentials, encrypted or not.
+# File names are not decided yet; revisit when secrets handling is designed.
+*.age
+secrets.*
+.env
