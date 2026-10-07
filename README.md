@@ -84,7 +84,6 @@ None of these is a dependency yet. `go.mod` has no `require` block.
 
 ## Not designed yet
 
-- Config loading: format, location and contents.
 - Secrets handling: the format of the encrypted file that holds the identity profile and mail credentials, and where the decryption key lives.
 - Deployment: the systemd timer and the service it starts, and where the binary and database live. The repository has no unit files.
 - Broker definition schema details. `brokers/README.md` is a draft.
