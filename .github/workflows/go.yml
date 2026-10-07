@@ -13,7 +13,7 @@ on:
     branches: ["*"]
 
 jobs:
-  build:
+  build-vet-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
