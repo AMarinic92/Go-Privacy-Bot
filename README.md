@@ -113,7 +113,7 @@ The scrubber requires a configuration to be set with appropriate values.
 
 ```yaml
 database: /var/lib/scrub/scrub.db
-brokers: /etc/scrub/brokerIs
+brokers: /etc/scrub/broker
 secrets: /etc/scrub/secrets.age
 
 smtp: { host: smtp.example.net, port: 587 }
@@ -123,5 +123,4 @@ alias_domain: aliases.example.net
 digest_to: you@example.net
 ```
 
-An example config is provided, and may have drifted from this document. Requirements for databses, brokers, secret, etc. Will be elaborated upon in this README.md
-cla
+An example config is provided, and may have drifted from this document. Requirements for databses, brokers, secret, etc. Will be elaborated upon in this README.m
