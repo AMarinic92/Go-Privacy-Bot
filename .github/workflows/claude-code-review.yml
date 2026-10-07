@@ -36,10 +36,50 @@ jobs:
         uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          plugin_marketplaces: 'https://github.com/anthropics/claude-code.git'
-          plugins: 'code-review@claude-code-plugins'
-          prompt: '/code-review:code-review --comment ${{ github.repository }}/pull/${{ github.event.pull_request.number }}'
+          track_progress: true
+          plugin_marketplaces: "https://github.com/anthropics/claude-code.git"
+          plugins: "code-review@claude-code-plugins"
+          prompt: "/code-review:code-review --comment ${{ github.repository }}/pull/${{ github.event.pull_request.number }}"
           claude_args: '--allowedTools "mcp__github_inline_comment__create_inline_comment"'
           # See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md
           # or https://code.claude.com/docs/en/cli-reference for available options
 
+  issue-checklist:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+      issues: write
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Report checklist status on the linked issue
+        id: issue-checklist
+        uses: anthropics/claude-code-action@v1
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          claude_args: >-
+            --allowedTools "Bash(gh pr view:*),Bash(gh pr diff:*),Bash(gh issue view:*),Bash(gh issue comment:*)"
+          prompt: |
+            Find the issue this pull request addresses, in this order: a closing
+            keyword in the PR body, then the branch name (a leading number means
+            that issue, so "2-config-format" means issue 2), then the PR title.
+            If no issue is found, do nothing and stop.
+
+            PR number: ${{ github.event.pull_request.number }}
+            Branch: ${{ github.event.pull_request.head.ref }}
+
+            Read that issue's acceptance criteria checklist. For each item, work
+            out from the PR diff and the repository whether it is met.
+
+            Post ONE comment on the issue: a table of every criterion marked met
+            or not met, and for each unmet item name the specific file and what
+            is missing. Say which PR this is for. Do not edit the issue body, do
+            not tick checkboxes, and do not comment on the pull request.

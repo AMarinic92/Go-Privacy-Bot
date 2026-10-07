@@ -8,7 +8,8 @@
 *.db-shm
 *.sqlite
 *.sqlite3
-
+# Configs
+/config.yaml 
 # Secrets: the identity profile and mail credentials, encrypted or not.
 # File names are not decided yet; revisit when secrets handling is designed.
 *.age

@@ -84,7 +84,6 @@ None of these is a dependency yet. `go.mod` has no `require` block.
 
 ## Not designed yet
 
-- Config loading: format, location and contents.
 - Secrets handling: the format of the encrypted file that holds the identity profile and mail credentials, and where the decryption key lives.
 - Deployment: the systemd timer and the service it starts, and where the binary and database live. The repository has no unit files.
 - Broker definition schema details. `brokers/README.md` is a draft.
@@ -107,3 +106,25 @@ When a pull request or push is done to main the following github actions are run
 ```
 
 The user can run these same commands locally from the project repo to simulate the PR/Push requirements.
+
+## Config
+
+### Example
+
+The scrubber requires a configuration to be set with appropriate values. The config is a YAML file with the following example which also exists in the repo.
+
+```yaml
+database: /var/lib/scrub/scrub.db
+brokers: /etc/scrub/brokers
+secrets: /etc/scrub/secrets.age
+
+smtp: { host: smtp.example.net, port: 587 }
+imap: { host: imap.example.net, port: 993 }
+
+alias_domain: aliases.example.net
+digest_to: you@example.net
+```
+
+### Location
+
+The config should be in the `/etc/scrub/` folder, but it can be overrideen with a flag.
