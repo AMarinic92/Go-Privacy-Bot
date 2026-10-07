@@ -109,11 +109,13 @@ The user can run these same commands locally from the project repo to simulate t
 
 ## Config
 
-The scrubber requires a configuration to be set with appropriate values.
+### Example
+
+The scrubber requires a configuration to be set with appropriate values. The config is a YAML file with the following example which also exists in the repo.
 
 ```yaml
 database: /var/lib/scrub/scrub.db
-brokers: /etc/scrub/broker
+brokers: /etc/scrub/brokers
 secrets: /etc/scrub/secrets.age
 
 smtp: { host: smtp.example.net, port: 587 }
@@ -123,4 +125,6 @@ alias_domain: aliases.example.net
 digest_to: you@example.net
 ```
 
-An example config is provided, and may have drifted from this document. Requirements for databses, brokers, secret, etc. Will be elaborated upon in this README.m
+### Location
+
+The config should be in the `/etc/scrub/` folder, but it can be overrideen with a flag.
