@@ -91,3 +91,36 @@ None of these is a dependency yet. `go.mod` has no `require` block.
 - Which discovery source is built first. `discover/probe` searches broker sites for the operator's identifiers. `discover/mailscan` reads the operator's mailboxes to list companies that already hold the operator's data, and a later mass-unsubscribe feature would reuse it.
 - The mail provider, and how per-broker aliases are created and recorded.
 - Gaps in the declared interfaces. These are listed in `internal/engine/README.md` and `internal/lifecycle/README.md`.
+
+## Github actions
+
+### Pull Request and Pushes
+
+When a pull request or push is done to main the following github actions are run
+
+```go
+ go build -v ./...
+ go vet -v ./...
+ go test -v ./...
+
+```
+
+The user can run these same commands locally from the project repo to simulate the PR/Push requirements.
+
+## Config
+
+The scrubber requires a configuration to be set with appropriate values.
+
+```yaml
+database: /var/lib/scrub/scrub.db
+brokers: /etc/scrub/brokerIs
+secrets: /etc/scrub/secrets.age
+
+smtp: { host: smtp.example.net, port: 587 }
+imap: { host: imap.example.net, port: 993 }
+
+alias_domain: aliases.example.net
+digest_to: you@example.net
+```
+
+An example config is provided, and may have drifted from this document. Requirements for databses, brokers, secret, etc. Will be elaborated upon in this README.md
