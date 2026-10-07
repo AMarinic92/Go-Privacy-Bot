@@ -14,3 +14,4 @@
 *.age
 secrets.*
 .env
+.claude

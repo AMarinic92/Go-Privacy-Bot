@@ -4,7 +4,7 @@ A self-hosted bot that finds the operator's listings on data broker and people-s
 
 ## Status
 
-Scaffold. Nothing is implemented. Every function and method body is `panic("not implemented")`, structs have no fields, and `go.mod` has no dependencies. The repository holds the package layout, the declarations and the documentation. `go build ./...` and `go vet ./...` pass.
+Scaffold. Nothing is implemented. Every function and method body is `panic("not implemented")`, structs have no fields, and `go.mod` has no dependencies. The repository holds the package layout, the declarations and the documentation. `go build ./...` and `go vet ./...` pass. Simple Github actions are implemented.
 
 ## How a daily run works
 
@@ -12,25 +12,25 @@ A systemd timer starts `scrub` once a day. The secrets file, which holds the ide
 
 ## Layout
 
-| Package | Responsibility |
-|---|---|
-| `cmd/scrub` | The binary. Wires adapters into the engine and calls `Tick`. Planned subcommands: `run`, `scan`, `status`, `queue`, `import`. The only package that imports adapters. |
-| `internal/engine` | Daily tick. Picks the next action per broker. Declares the five ports in `ports.go`. |
-| `internal/lifecycle` | Request states and deadlines. |
-| `internal/broker` | Broker definition schema and validation. |
-| `internal/profile` | The operator's identifiers and aliases. |
-| `internal/letter` | Letter templates. PIPEDA today. |
-| `internal/registry` | Turns public broker lists into draft definitions. |
-| `internal/discover/probe` | Source. Searches broker sites. |
-| `internal/discover/mailscan` | Source. Scans the operator's mailboxes for companies that hold the operator's data. |
-| `internal/channel/email` | Channel. Sends letters over SMTP. |
-| `internal/channel/webform` | Channel. Runs a definition's form steps in headless Chromium. |
-| `internal/channel/manual` | Channel. Queues a task for the operator. |
-| `internal/inbox/imap` | Inbox. Finds confirmation links and classifies replies. |
-| `internal/store/sqlite` | Store. Requests, events and evidence. |
-| `internal/notify` | Notifier. Digest by push or email. |
-| `brokers/` | Broker definitions as YAML: `example.yaml`, and `brokers.yaml` with 633 unreviewed drafts. The format is a draft. |
-| `docs/` | Architecture diagrams. |
+| Package                      | Responsibility                                                                                                                                                        |
+| ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `cmd/scrub`                  | The binary. Wires adapters into the engine and calls `Tick`. Planned subcommands: `run`, `scan`, `status`, `queue`, `import`. The only package that imports adapters. |
+| `internal/engine`            | Daily tick. Picks the next action per broker. Declares the five ports in `ports.go`.                                                                                  |
+| `internal/lifecycle`         | Request states and deadlines.                                                                                                                                         |
+| `internal/broker`            | Broker definition schema and validation.                                                                                                                              |
+| `internal/profile`           | The operator's identifiers and aliases.                                                                                                                               |
+| `internal/letter`            | Letter templates. PIPEDA today.                                                                                                                                       |
+| `internal/registry`          | Turns public broker lists into draft definitions.                                                                                                                     |
+| `internal/discover/probe`    | Source. Searches broker sites.                                                                                                                                        |
+| `internal/discover/mailscan` | Source. Scans the operator's mailboxes for companies that hold the operator's data.                                                                                   |
+| `internal/channel/email`     | Channel. Sends letters over SMTP.                                                                                                                                     |
+| `internal/channel/webform`   | Channel. Runs a definition's form steps in headless Chromium.                                                                                                         |
+| `internal/channel/manual`    | Channel. Queues a task for the operator.                                                                                                                              |
+| `internal/inbox/imap`        | Inbox. Finds confirmation links and classifies replies.                                                                                                               |
+| `internal/store/sqlite`      | Store. Requests, events and evidence.                                                                                                                                 |
+| `internal/notify`            | Notifier. Digest by push or email.                                                                                                                                    |
+| `brokers/`                   | Broker definitions as YAML: `example.yaml`, and `brokers.yaml` with 633 unreviewed drafts. The format is a draft.                                                     |
+| `docs/`                      | Architecture diagrams.                                                                                                                                                |
 
 Core packages are `engine`, `lifecycle`, `broker`, `profile` and `letter`. They import no adapter package, and their signatures take no file paths, connections or clients. Each package directory has a README with its API and open questions.
 
@@ -74,13 +74,13 @@ Two public lists feed draft definitions. Both are reviewed by hand before anythi
 
 None of these is a dependency yet. `go.mod` has no `require` block.
 
-| Need | Candidate |
-|---|---|
-| Driving Chromium | `chromedp` or `rod` |
-| IMAP inbox | `emersion/go-imap` |
+| Need               | Candidate            |
+| ------------------ | -------------------- |
+| Driving Chromium   | `chromedp` or `rod`  |
+| IMAP inbox         | `emersion/go-imap`   |
 | SQLite without cgo | `modernc.org/sqlite` |
-| Secrets file | `filippo.io/age` |
-| Broker definitions | `gopkg.in/yaml.v3` |
+| Secrets file       | `filippo.io/age`     |
+| Broker definitions | `gopkg.in/yaml.v3`   |
 
 ## Not designed yet
 
@@ -92,3 +92,18 @@ None of these is a dependency yet. `go.mod` has no `require` block.
 - Which discovery source is built first. `discover/probe` searches broker sites for the operator's identifiers. `discover/mailscan` reads the operator's mailboxes to list companies that already hold the operator's data, and a later mass-unsubscribe feature would reuse it.
 - The mail provider, and how per-broker aliases are created and recorded.
 - Gaps in the declared interfaces. These are listed in `internal/engine/README.md` and `internal/lifecycle/README.md`.
+
+## Github actions
+
+### Pull Request and Pushes
+
+When a pull request or push is done to main the following github actions are run
+
+```go
+ go build -v ./...
+ go vet -v ./...
+ go test -v ./...
+
+```
+
+The user can run these same commands locally from the project repo to simulate the PR/Push requirements.
