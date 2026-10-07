@@ -30,7 +30,7 @@ The scrubber requires a configuration to be set with appropriate values.
 
 ```yaml
 database: /var/lib/scrub/scrub.db
-brokers: /etc/scrub/brokerIs
+brokers: /etc/scrub/broker
 secrets: /etc/scrub/secrets.age
 
 smtp: { host: smtp.example.net, port: 587 }
