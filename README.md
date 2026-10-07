@@ -106,3 +106,21 @@ When a pull request or push is done to main the following github actions are run
 ```
 
 The user can run these same commands locally from the project repo to simulate the PR/Push requirements.
+
+## Config
+
+The scrubber requires a configuration to be set with appropriate values.
+
+```yaml
+database: /var/lib/scrub/scrub.db
+brokers: /etc/scrub/brokerIs
+secrets: /etc/scrub/secrets.age
+
+smtp: { host: smtp.example.net, port: 587 }
+imap: { host: imap.example.net, port: 993 }
+
+alias_domain: aliases.example.net
+digest_to: you@example.net
+```
+
+An example config is provided, and may have drifted from this document. Requirements for databses, brokers, secret, etc. Will be elaborated upon in this README.md
