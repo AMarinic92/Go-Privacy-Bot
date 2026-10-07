@@ -124,3 +124,4 @@ digest_to: you@example.net
 ```
 
 An example config is provided, and may have drifted from this document. Requirements for databses, brokers, secret, etc. Will be elaborated upon in this README.md
+cla

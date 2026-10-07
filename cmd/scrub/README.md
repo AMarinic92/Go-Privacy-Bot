@@ -23,3 +23,22 @@ May import any package in this module. Nothing imports it.
 - What `run`, `scan`, `status` and `queue` do. Diagram 2 links only `import` (to `registry`) and the call to `Tick`, and does not say which subcommand calls `Tick`.
 - Where `import` reads its CSV and where it writes drafts.
 - Config loading, secrets handling and deployment. See the root README.
+
+## Config
+
+The scrubber requires a configuration to be set with appropriate values.
+
+```yaml
+database: /var/lib/scrub/scrub.db
+brokers: /etc/scrub/brokerIs
+secrets: /etc/scrub/secrets.age
+
+smtp: { host: smtp.example.net, port: 587 }
+imap: { host: imap.example.net, port: 993 }
+
+alias_domain: aliases.example.net
+digest_to: you@example.net
+```
+
+An example config is provided, and may have drifted from this document. Requirements for databses, brokers, secret, etc. Will be elaborated upon in this README.md
+cla
