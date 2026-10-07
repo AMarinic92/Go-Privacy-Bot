@@ -84,7 +84,6 @@ None of these is a dependency yet. `go.mod` has no `require` block.
 
 ## Not designed yet
 
-- Secrets handling: the format of the encrypted file that holds the identity profile and mail credentials, and where the decryption key lives.
 - Deployment: the systemd timer and the service it starts, and where the binary and database live. The repository has no unit files.
 - Broker definition schema details. `brokers/README.md` is a draft.
 - How the engine chooses a channel for a broker.
@@ -128,3 +127,56 @@ digest_to: you@example.net
 ### Location
 
 The config should be in the `/etc/scrub/` folder, but it can be overrideen with a flag.
+
+## Secrets
+
+The identity profile and the mail credentials, encrypted with `age` and decrypted at start. Nothing in it is ever written to disk in the clear.
+
+This is the file that would hurt. The bot exists to scrub your personal data off the internet, and to do that it has to keep a complete copy of it on a box in your house. Treat it accordingly.
+
+### Editing
+
+You do not open this file. No editor, no temp file, no decrypt-and-vim. The CLI owns it.
+
+```sh
+scrub secrets set smtp.password        # prompts, echo off
+cat key | scrub secrets set imap.password
+```
+
+The value never goes in an argument. Arguments land in your shell history and in `/proc`, where anyone on the box can read them. Prompt or stdin, nothing else.
+
+Writes are atomic. Decrypt in memory, change the field, re-encrypt, write beside the original, rename over it. A crash halfway through should cost nothing.
+
+### Checking
+
+You cannot read the file back, so the CLI tells you whether it works instead.
+
+```sh
+scrub secrets check
+```
+
+SMTP and IMAP get a real login. The alias domain gets an MX lookup. Those pass or they don't.
+
+Your name and address get a format check and nothing more. Nobody can tell you whether you typed your own street right, which is why:
+
+```sh
+scrub secrets show
+```
+
+Credentials come back masked. Identity fields come back in full. A typo in your address means every broker rejects every request and none of them tell you why, so read it twice.
+
+### The key
+
+`secrets.age` is encrypted with `age`. The age identity that opens it is handed to the service by systemd as an encrypted credential.
+
+```ini
+[Service]
+User=scrub
+LoadCredentialEncrypted=age-identity:/etc/scrub/age-identity.cred
+```
+
+systemd encrypts that credential with the TPM and a host key, then drops the plaintext into a tmpfs only this service can read. Steal the disk and you get two files that open nothing.
+
+Keep an offline copy of the age identity somewhere else. If the board dies the credential dies with it, and `secrets.age` is the only half you can restore on new hardware.
+
+Swap goes encrypted or off. Decrypted secrets sitting in a swap file defeat the whole thing.
